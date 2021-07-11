@@ -4,6 +4,7 @@ namespace app\models\broker;
 
 use ErrorException;
 use PhpAmqpLib\Channel\AMQPChannel;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
 
 /**
  * Class AmqpConsumer
@@ -18,11 +19,11 @@ abstract class AmqpConsumer implements ConsumerInterface
     /**
      * Consumer constructor.
      *
-     * @param AMQPChannel $channel
+     * @param AMQPStreamConnection $connection
      */
-    public function __construct(AMQPChannel $channel)
+    public function __construct(AMQPStreamConnection $connection)
     {
-        $this->channel = $channel;
+        $this->channel = $connection->channel();
     }
 
     /**

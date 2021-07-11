@@ -1,10 +1,5 @@
 version: '3.8'
 
-# Создаем общую сеть default для всех контейнеров
-networks:
-  default:
-    driver: bridge
-
 services:
   database:
     image: mysql:latest
@@ -12,9 +7,7 @@ services:
       - MYSQL_DATABASE=${DATABASE_NAME}
       - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
     ports:
-      - "3306:3306"
-    networks:
-      - default
+      - 3306:3306
     volumes:
       - ./docker/database/mysql/data:/var/lib/mysql
 
@@ -23,8 +16,6 @@ services:
       context: ./docker/php-fpm
     depends_on:
       - database
-    networks:
-      - default
     volumes:
       - .:/var/www
 
@@ -33,10 +24,21 @@ services:
       context: ./docker/listener
     deploy:
       replicas: 3
-    networks:
-      - default
+    depends_on:
+      - rabbitmq
     volumes:
       - .:/var/www
+
+  rabbitmq:
+    image: rabbitmq:3.6-management-alpine
+    environment:
+      RABBITMQ_ERLANG_COOKIE: ${RABBITMQ_ERLANG_COOKIE}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_DEFAULT_VHOST}
+    ports:
+      - 15672:15672
+      - 5672:5672
 
   nginx:
     build:
@@ -50,4 +52,9 @@ services:
     depends_on:
       - php-fpm
     ports:
-      - "80:80"
+      - 80:80
+
+# Создаем общую сеть default для всех контейнеров
+networks:
+  default:
+    driver: bridge

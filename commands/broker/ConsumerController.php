@@ -2,6 +2,7 @@
 
 namespace app\commands\broker;
 
+use app\models\broker\ConsumerInterface;
 use app\models\broker\rabbit\consumer\AccountMessageConsumer;
 use Exception;
 use Yii;
@@ -17,7 +18,7 @@ class ConsumerController extends Controller
     /**
      * @param AccountMessageConsumer $consumer
      */
-    public function actionListenAccountMessage(AccountMessageConsumer $consumer)
+    public function actionListenAccountMessage(ConsumerInterface $consumer)
     {
         try {
             $consumer->listen();
