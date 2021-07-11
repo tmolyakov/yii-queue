@@ -28,6 +28,16 @@ services:
     volumes:
       - .:/var/www
 
+  listener:
+    build:
+      context: ./docker/listener
+    deploy:
+      replicas: 3
+    networks:
+      - default
+    volumes:
+      - .:/var/www
+
   nginx:
     build:
       context: ./docker/nginx
