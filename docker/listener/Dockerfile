@@ -1,4 +1,4 @@
 FROM php:7.4-cli
 
 WORKDIR /var/www
-CMD [ "php", "./yii", "hello"]
+CMD [ "php", "./yii", "broker/consumer/listen-account-message"]
